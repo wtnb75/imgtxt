@@ -45,27 +45,38 @@ expected output file in `tests/functional/fixtures/expected/`.
 
 ```toml
 [[cases]]
-id = "gradient-brightness"
+id = "gradient-ascii-mono"
 image = "gradient.png"
-method = "brightness"
+charset = "ascii"
+color = "mono"
 width = 20
-expected = "gradient_brightness_w20.txt"
+expected = "gradient_ascii_mono_w20.txt"
 
 [[cases]]
-id = "gradient-edge"
+id = "gradient-braille-mono"
 image = "gradient.png"
-method = "edge"
+charset = "braille"
+color = "mono"
 width = 20
-expected = "gradient_edge_w20.txt"
+expected = "gradient_braille_mono_w20.txt"
 
 [[cases]]
-id = "checkerboard-block"
+id = "checkerboard-block-mono"
 image = "checkerboard.png"
-method = "block"
+charset = "block"
+color = "mono"
 width = 20
-expected = "checkerboard_block_w20.txt"
+expected = "checkerboard_block_mono_w20.txt"
 
-# Add new methods here — no changes to test code required
+[[cases]]
+id = "checkerboard-ascii-ansi"
+image = "checkerboard.png"
+charset = "ascii"
+color = "ansi"
+width = 20
+expected = "checkerboard_ascii_ansi_w20.txt"
+
+# Add new charsets/color combinations here — no changes to test code required
 ```
 
 ### `tests/functional/conftest.py`
@@ -101,7 +112,12 @@ FIXTURES = Path(__file__).parent / "fixtures"
 def test_convert_output(case):
     image_path = FIXTURES / "images" / case["image"]
     expected_path = FIXTURES / "expected" / case["expected"]
-    result = convert(image_path, method=case["method"], width=case["width"])
+    result = convert(
+        image_path,
+        charset=case["charset"],
+        color=case["color"],
+        width=case["width"],
+    )
     assert result == expected_path.read_text()
 ```
 
