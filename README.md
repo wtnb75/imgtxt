@@ -1,5 +1,7 @@
 # imgtxt
 
+[![CI](https://github.com/wtnb75/imgtxt/actions/workflows/ci.yml/badge.svg)](https://github.com/wtnb75/imgtxt/actions/workflows/ci.yml)
+
 Turn any image into terminal text art. Pick your character set, tweak the width, pipe it wherever.
 
 ```
