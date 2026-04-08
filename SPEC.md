@@ -130,13 +130,45 @@ col 0, row 3 → bit 6 (dot 7)    col 1, row 3 → bit 7 (dot 8)
 
 ### `sextant` — 2×3 dot encoding
 
-Each sextant cell covers a 2×3 pixel region (6 bits → 63 non-space characters + space).
-U+1FB00 encodes pattern `000001`, U+1FB3B encodes `111110`; `U+0020` (space) = `000000`,
-`U+2588` (█) = `111111`.
+Each sextant cell covers a 2×3 pixel region. The 6 sextant positions are numbered:
+
+```
+col 0 | col 1
+------+------
+  1   |  2    (row 0)
+  3   |  4    (row 1)
+  5   |  6    (row 2)
+```
+
+Pixel (col, row) corresponds to sextant number `row * 2 + col + 1`.
+Each pixel is thresholded; a dark pixel means the sextant dot is "on".
+
+- Empty pattern (000000) → U+0020 (space)
+- Full pattern  (111111) → U+2588 (█)
+- All other 62 patterns → look up in a prebuilt `SEXTANT_MAP: dict[frozenset[int], str]`
+
+**Note on coverage:** U+1FB00–U+1FB3B contains 60 characters. Of the 62 non-trivial patterns,
+at least one (Sextant-{2,4,6}) is absent from the block. The lookup table must be built by
+parsing Unicode character names at build time (or hardcoded), and missing patterns should
+fall back to the nearest-density sextant character.
+
+
+## Dithering (`--dither`)
+
+Applies to thresholded charsets: `block`, `braille`, `sextant`.
+
+| Value | Description |
+|-------|-------------|
+| `none` | Simple threshold at 128 (default) |
+| `floyd-steinberg` | Floyd-Steinberg error diffusion |
+| `ordered` | 4×4 Bayer ordered dithering |
+
+In `mono` mode, dithering operates on the grayscale pixel values.
+In `ansi` mode, dithering operates per color channel independently before ANSI color matching.
 
 ---
 
-## Color (`--color`)
+
 
 | Value | Description |
 |-------|-------------|
@@ -167,10 +199,24 @@ The palette data is stored in `imgtxt/data/ansi_palettes.toml`.
 - In `mono` mode: convert to grayscale before sampling; no escape codes emitted
 - In `ansi` mode: keep RGB; brightness still controls character choice within the cell
 - When stdout is not a TTY, `ansi` falls back to `mono` automatically
+- `emoji` charset ignores `--color` entirely; it always selects characters by RGB distance
+  and emits no ANSI escape codes (emoji carry their own color visually)
+
+### `ansi` + `block`: fg/bg color trick
+
+When `--charset block --color ansi`, use both foreground **and** background ANSI colors
+to encode the two halves of each block character independently, doubling effective color
+resolution. For each cell:
+
+1. Split the 2×2 pixel block into "upper half" (rows 0) and "lower half" (row 1)
+2. Compute average RGB for each half
+3. Map each half to the nearest ANSI color in the active palette
+4. Emit: `\x1b[3{fg}m\x1b[4{bg}m▀` where fg = upper color, bg = lower color
+
+If both halves map to the same color, emit `█` with only foreground color.
 
 ---
 
----
 
 ## CLI Interface
 
@@ -191,10 +237,14 @@ imgtxt convert [OPTIONS] IMAGE_PATH
 | `--charset` | Character set: `ascii` / `unicode` / `braille` / `block` / `sextant` / `emoji` (default: `ascii`) |
 | `--color` | Color mode: `mono` / `ansi` (default: `mono`) |
 | `--bg` | Terminal background for ANSI palette: `dark` / `light` (default: `dark`; ignored in `mono` mode) |
-| `--width` | Output width in terminal columns (default: 80) |
+| `--dither` | Dithering for thresholded charsets: `none` / `floyd-steinberg` / `ordered` (default: `none`) |
+| `--width` | Output width in terminal columns (default: auto-detect from terminal, fallback 80) |
 | `--height` | Output height in terminal rows (auto-calculated from aspect ratio if omitted) |
 | `--output` | Output file path (defaults to stdout) |
 | `--invert` | Invert light/dark |
+
+`--width` auto-detection uses `shutil.get_terminal_size()`. When stdout is not a TTY
+(e.g. piped), the fallback value is **80**.
 
 
 ## Directory Structure
@@ -205,6 +255,11 @@ imgtxt/
 ├── SPEC.md
 ├── SPEC_TEST.md
 ├── pyproject.toml              # includes uv / ruff config
+├── scripts/
+│   └── precompute/
+│       ├── build_unicode_brightness.py   # generates imgtxt/data/unicode_brightness.txt
+│       ├── build_emoji_colors.py         # generates imgtxt/data/emoji_colors.json
+│       └── README.md                     # how to run, font requirements
 ├── imgtxt/
 │   ├── __init__.py
 │   ├── cli.py                  # CLI entry point (typer)
@@ -238,7 +293,7 @@ requires-python = ">=3.11"
 dependencies = [
     "Pillow",       # image loading and resizing
     "typer",        # CLI framework
-    "numpy",        # numerical operations (e.g. edge detection)
+    "wcwidth",      # display-width calculation for Unicode/emoji characters
 ]
 
 [project.scripts]
@@ -272,11 +327,16 @@ show_missing = true
 - Account for character aspect ratio (~2:1) and per-charset cell resolution when computing sample size
 - Use `wcwidth()` from the `wcwidth` package for all display-width calculations;
   never assume a character is 1 column wide without checking
+- Auto-detect terminal width with `shutil.get_terminal_size(fallback=(80, 24))`;
+  use the detected width when `--width` is not specified
 - Fall back to `mono` when stdout is not a TTY and `--color ansi` is requested
+- `emoji` ignores `--color`; character selection is always RGB-based regardless of color mode
+- Dithering (`--dither`) applies only to thresholded charsets (`block`, `braille`, `sextant`);
+  it is silently ignored for `ascii`, `unicode`, `emoji`
 - Pre-computed data files live in `imgtxt/data/` and are committed to the repo:
-  - `unicode_brightness.txt` — characters sorted by visual density
-  - `emoji_colors.json` — emoji to representative RGB mapping
-  - `ansi_palettes.toml` — dark/light canonical ANSI color palettes
+  - `unicode_brightness.txt` — characters sorted by visual density (generated by `scripts/precompute/`)
+  - `emoji_colors.json` — emoji to representative RGB mapping (generated by `scripts/precompute/`)
+  - `ansi_palettes.toml` — dark/light canonical ANSI color palettes (hand-authored)
 - Each module's responsibility:
   - `cli.py` — argument parsing and subcommand routing only; no conversion logic
   - `converter.py` — all conversion logic; exposes `convert()` and `CHARSET_MAP` / `COLOR_MAP` dicts
