@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from unittest.mock import patch
 
@@ -14,19 +15,25 @@ runner = CliRunner(env={"NO_COLOR": "1"})
 FIXTURE_IMAGES = Path(__file__).parent.parent / "functional" / "fixtures" / "images"
 
 
+def _strip_ansi(text: str) -> str:
+    """Remove ANSI escape codes from text."""
+    return re.sub(r"\x1b\[[0-9;]*[mKJHABCDEFGnsu]", "", text)
+
+
 class TestCliHelp:
     def test_root_help(self):
         result = runner.invoke(app, ["--help"])
         assert result.exit_code == 0
-        assert "convert" in result.output.lower()
+        assert "convert" in _strip_ansi(result.output).lower()
 
     def test_convert_help(self):
         result = runner.invoke(app, ["convert", "--help"])
         assert result.exit_code == 0
-        assert "--charset" in result.output
-        assert "--color" in result.output
-        assert "--dither" in result.output
-        assert "--width" in result.output
+        plain = _strip_ansi(result.output)
+        assert "--charset" in plain
+        assert "--color" in plain
+        assert "--dither" in plain
+        assert "--width" in plain
 
 
 class TestConvertCommand:
