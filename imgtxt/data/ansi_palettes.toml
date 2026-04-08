@@ -1,0 +1,174 @@
+# ANSI 16-color palettes for dark and light terminal backgrounds.
+# RGB values based on the xterm/VTE default palette (widely supported).
+#
+# "exclude" lists color codes to omit from foreground selection
+# to avoid invisible text against the terminal background.
+
+[dark]
+# On dark backgrounds, exclude black (code 0) as foreground.
+exclude = [0]
+
+[[dark.colors]]
+code = 0
+name = "black"
+rgb = [0, 0, 0]
+
+[[dark.colors]]
+code = 1
+name = "maroon"
+rgb = [128, 0, 0]
+
+[[dark.colors]]
+code = 2
+name = "green"
+rgb = [0, 128, 0]
+
+[[dark.colors]]
+code = 3
+name = "olive"
+rgb = [128, 128, 0]
+
+[[dark.colors]]
+code = 4
+name = "navy"
+rgb = [0, 0, 128]
+
+[[dark.colors]]
+code = 5
+name = "purple"
+rgb = [128, 0, 128]
+
+[[dark.colors]]
+code = 6
+name = "teal"
+rgb = [0, 128, 128]
+
+[[dark.colors]]
+code = 7
+name = "silver"
+rgb = [192, 192, 192]
+
+[[dark.colors]]
+code = 8
+name = "grey"
+rgb = [128, 128, 128]
+
+[[dark.colors]]
+code = 9
+name = "red"
+rgb = [255, 0, 0]
+
+[[dark.colors]]
+code = 10
+name = "lime"
+rgb = [0, 255, 0]
+
+[[dark.colors]]
+code = 11
+name = "yellow"
+rgb = [255, 255, 0]
+
+[[dark.colors]]
+code = 12
+name = "blue"
+rgb = [0, 0, 255]
+
+[[dark.colors]]
+code = 13
+name = "fuchsia"
+rgb = [255, 0, 255]
+
+[[dark.colors]]
+code = 14
+name = "aqua"
+rgb = [0, 255, 255]
+
+[[dark.colors]]
+code = 15
+name = "white"
+rgb = [255, 255, 255]
+
+
+[light]
+# On light backgrounds, exclude white (15) and silver (7) as foreground.
+exclude = [7, 15]
+
+[[light.colors]]
+code = 0
+name = "black"
+rgb = [0, 0, 0]
+
+[[light.colors]]
+code = 1
+name = "maroon"
+rgb = [128, 0, 0]
+
+[[light.colors]]
+code = 2
+name = "green"
+rgb = [0, 128, 0]
+
+[[light.colors]]
+code = 3
+name = "olive"
+rgb = [128, 128, 0]
+
+[[light.colors]]
+code = 4
+name = "navy"
+rgb = [0, 0, 128]
+
+[[light.colors]]
+code = 5
+name = "purple"
+rgb = [128, 0, 128]
+
+[[light.colors]]
+code = 6
+name = "teal"
+rgb = [0, 128, 128]
+
+[[light.colors]]
+code = 7
+name = "silver"
+rgb = [192, 192, 192]
+
+[[light.colors]]
+code = 8
+name = "grey"
+rgb = [128, 128, 128]
+
+[[light.colors]]
+code = 9
+name = "red"
+rgb = [255, 0, 0]
+
+[[light.colors]]
+code = 10
+name = "lime"
+rgb = [0, 255, 0]
+
+[[light.colors]]
+code = 11
+name = "yellow"
+rgb = [255, 255, 0]
+
+[[light.colors]]
+code = 12
+name = "blue"
+rgb = [0, 0, 255]
+
+[[light.colors]]
+code = 13
+name = "fuchsia"
+rgb = [255, 0, 255]
+
+[[light.colors]]
+code = 14
+name = "aqua"
+rgb = [0, 255, 255]
+
+[[light.colors]]
+code = 15
+name = "white"
+rgb = [255, 255, 255]

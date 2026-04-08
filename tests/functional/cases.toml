@@ -1,0 +1,35 @@
+# Functional test case definitions.
+# To add a new test: append a [[cases]] entry and place the expected
+# output file in tests/functional/fixtures/expected/.
+
+[[cases]]
+id = "gradient-ascii-mono"
+image = "gradient.png"
+charset = "ascii"
+color = "mono"
+width = 20
+expected = "gradient_ascii_mono_w20.txt"
+
+[[cases]]
+id = "gradient-braille-mono"
+image = "gradient.png"
+charset = "braille"
+color = "mono"
+width = 20
+expected = "gradient_braille_mono_w20.txt"
+
+[[cases]]
+id = "checkerboard-block-mono"
+image = "checkerboard.png"
+charset = "block"
+color = "mono"
+width = 20
+expected = "checkerboard_block_mono_w20.txt"
+
+[[cases]]
+id = "gradient-sextant-mono"
+image = "gradient.png"
+charset = "sextant"
+color = "mono"
+width = 20
+expected = "gradient_sextant_mono_w20.txt"
