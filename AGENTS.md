@@ -8,7 +8,7 @@ See [SPEC.md](SPEC.md) for design details and [SPEC_TEST.md](SPEC_TEST.md) for t
 
 ## Tech Stack
 
-- **Language**: Python 3.11+
+- **Language**: Python 3 (latest stable release)
 - **Package manager**: [uv](https://docs.astral.sh/uv/)
 - **Linter / Formatter**: [ruff](https://docs.astral.sh/ruff/)
 

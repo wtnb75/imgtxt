@@ -10,7 +10,7 @@ Turn any image into terminal text art. Pick your character set, tweak the width,
 
 ## Install
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/).
+Requires Python 3 (latest stable release) and [uv](https://docs.astral.sh/uv/).
 
 ```sh
 git clone https://github.com/wtnb75/imgtxt
