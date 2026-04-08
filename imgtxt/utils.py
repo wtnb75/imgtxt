@@ -78,7 +78,6 @@ def compute_sample_size(
 
     # Cell multipliers (pixels per character cell per axis)
     cell_w, cell_h = _cell_multipliers(charset)
-    char_aspect = 2.0  # terminal character height ≈ 2× its width
 
     # For emoji, effective character columns = out_width // 2 (each emoji is 2 cols wide)
     if charset == "emoji":
@@ -87,6 +86,10 @@ def compute_sample_size(
         char_cols = out_width
 
     sample_w = char_cols * cell_w
+
+    # emoji is a wide character (2 terminal columns), so its cell aspect ratio is ~1.0
+    # (2 cols wide × ~2 rows tall ≈ square). Other charsets use 2.0 (1 col × 2 rows tall).
+    char_aspect = 1.0 if charset == "emoji" else 2.0
 
     if out_height is not None:
         sample_h = out_height * cell_h

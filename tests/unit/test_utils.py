@@ -48,7 +48,7 @@ class TestComputeSampleSize:
     def test_emoji_halves_columns(self):
         w, h = utils.compute_sample_size(40, None, "emoji", (100, 100))
         assert w == 20  # 40//2 * 1
-        assert h == 10  # char_rows = round(20*1.0/2)=10
+        assert h == 20  # char_rows = round(20*1.0/1.0)=20 (emoji char_aspect=1.0)
 
     def test_explicit_height_overrides_auto(self):
         w, h = utils.compute_sample_size(40, 5, "ascii", (100, 100))
