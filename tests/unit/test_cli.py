@@ -9,7 +9,7 @@ from typer.testing import CliRunner
 
 from imgtxt.cli import app
 
-runner = CliRunner()
+runner = CliRunner(env={"NO_COLOR": "1"})
 
 FIXTURE_IMAGES = Path(__file__).parent.parent / "functional" / "fixtures" / "images"
 
