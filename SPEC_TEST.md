@@ -90,10 +90,12 @@ from pathlib import Path
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
+
 def load_cases():
     with open(Path(__file__).parent / "cases.toml", "rb") as f:
         data = tomllib.load(f)
     return data["cases"]
+
 
 def pytest_generate_tests(metafunc):
     if "case" in metafunc.fixturenames:
@@ -108,6 +110,7 @@ from imgtxt.converter import convert
 from pathlib import Path
 
 FIXTURES = Path(__file__).parent / "fixtures"
+
 
 def test_convert_output(case):
     image_path = FIXTURES / "images" / case["image"]
