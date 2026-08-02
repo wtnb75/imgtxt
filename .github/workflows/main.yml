@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-    - uses: wtnb75/actions/python@9c4dff839b50ce9a30c5d564206a893f8a99acee # v1.0.9
-    - uses: wtnb75/actions/ruff@9c4dff839b50ce9a30c5d564206a893f8a99acee # v1.0.9
-    - uses: wtnb75/actions/pytest@9c4dff839b50ce9a30c5d564206a893f8a99acee # v1.0.9
-    - uses: wtnb75/actions/wheel@9c4dff839b50ce9a30c5d564206a893f8a99acee # v1.0.9
+    - uses: wtnb75/actions/python@v1
+    - uses: wtnb75/actions/ruff@v1
+    - uses: wtnb75/actions/pytest@v1
+    - uses: wtnb75/actions/wheel@v1
     - id: pdoc
-      uses: wtnb75/actions/pdoc@9c4dff839b50ce9a30c5d564206a893f8a99acee # v1.0.9
+      uses: wtnb75/actions/pdoc@v1
       with:
         output-dir: docs
         module: imgtxt
