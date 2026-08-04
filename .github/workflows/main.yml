@@ -23,7 +23,7 @@ jobs:
         output-dir: docs
         module: imgtxt
         other-options: --docformat google
-    - uses: wtnb75/actions/merge-pages@9c4dff839b50ce9a30c5d564206a893f8a99acee # v1.0.9
+    - uses: wtnb75/actions/merge-pages@v1
       with:
         dirs: "cover docs"
     - name: Setup Pages
